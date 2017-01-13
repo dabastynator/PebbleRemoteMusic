@@ -39,8 +39,9 @@ function getPlaying(callback){
 }
 
 function sendPlaying(playing){
+  console.log('Send playing: ' + playing);
   var dict;
-  if (playing !== undefined){    
+  if (playing !== undefined && playing !== null){    
     dict = { 'ARTIST': playing.artist, 'TITLE': playing.title };
   } else {
     dict = { 'ARTIST': 'Nothing played', 'TITLE': '' };
@@ -54,10 +55,12 @@ function sendPlaying(playing){
 }
 
 function update_volume(message) {
-  var claySetting = JSON.parse(localStorage.getItem('clay-settings'));  
+  var claySetting = JSON.parse(localStorage.getItem('clay-settings'));
+  console.log('Update volume. Get current volume first');
   getPlaying(function(playing){
     var url = claySetting.host + '?token=' + claySetting.token + '&id=' + claySetting.id + '&player=' + claySetting.player;
-    if (message !== undefined && playing !== undefined && playing.current_playing !== undefined){
+    console.log('Update volume. Get current volume done.');
+    if (message !== undefined && playing !== null && playing.current_playing !== null){
       var volume = playing.current_playing.volume;
       if (message.VOLUME === 0){      
         volume = volume + 5;
@@ -65,15 +68,17 @@ function update_volume(message) {
         volume = volume - 5;
       }
       url = url + '&volume=' + volume;
-      console.log('Send webrequest: ' + url);  
+      console.log('Send webrequest: ' + url);
       sendVolumeRequest(url);
+    } else {
+      console.log('No active player -> Cant update volume...');
     }
   });
 }
 
 function play_pause(){
   var claySetting = JSON.parse(localStorage.getItem('clay-settings'));  
-  var url = claySetting.host + '/play_pause?token=' + claySetting.token + '&id=' + claySetting.id;
+  var url = claySetting.host + '/play_pause?token=' + claySetting.token + '&id=' + claySetting.id + '&player=' + claySetting.player;
   var req = new XMLHttpRequest();  
   console.log("Set play/pause: " + url);  
   
