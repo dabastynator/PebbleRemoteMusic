@@ -1,0 +1,58 @@
+{
+    "author": "pichlmeier.sebastian@gmail.com",
+    "dependencies": {
+        "pebble-clay": "^1.0.3"
+    },
+    "keywords": [],
+    "name": "musiccontrol",
+    "pebble": {
+        "displayName": "MusicControl",
+        "enableMultiJS": true,
+        "messageKeys": [
+            "VOLUME",
+            "ARTIST",
+            "TITLE"
+        ],
+        "projectType": "native",
+        "resources": {
+            "media": [
+                {
+                    "file": "images/ICON",
+                    "menuIcon": true,
+                    "name": "ICON",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/PLAY",
+                    "name": "PLAY",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/VOL_DOWN",
+                    "name": "VOL_DOWN",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                },
+                {
+                    "file": "images/VOL_UP",
+                    "name": "VOL_UP",
+                    "targetPlatforms": null,
+                    "type": "bitmap"
+                }
+            ]
+        },
+        "sdkVersion": "3",
+        "targetPlatforms": [
+            "aplite",
+            "basalt",
+            "chalk"
+        ],
+        "uuid": "6501e040-b1c6-4e0d-953e-63bb28184788",
+        "watchapp": {
+            "watchface": false
+        }
+    },
+    "version": "1.0.0"
+}
