@@ -23,8 +23,14 @@ module.exports = [
       {
         "type": "input",
         "messageKey": "id",
-        "defaultValue": "meadia.living",
+        "defaultValue": "media.living",
         "label": "Mediaserver id"
+      },
+      {
+        "type": "input",
+        "messageKey": "player",
+        "defaultValue": "mplayer",
+        "label": "Player"
       },
       {
         "type": "input",

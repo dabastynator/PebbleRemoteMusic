@@ -56,7 +56,7 @@ function sendPlaying(playing){
 function update_volume(message) {
   var claySetting = JSON.parse(localStorage.getItem('clay-settings'));  
   getPlaying(function(playing){
-    var url = claySetting.host + '?token=' + claySetting.token + '&id=' + claySetting.id;
+    var url = claySetting.host + '?token=' + claySetting.token + '&id=' + claySetting.id + '&player=' + claySetting.player;
     if (message !== undefined && playing !== undefined && playing.current_playing !== undefined){
       var volume = playing.current_playing.volume;
       if (message.VOLUME === 0){      
@@ -85,7 +85,7 @@ function play_pause(){
       } else {
         if (response.error){
           console.log("Error play_pause. message: " + response.error.message);
-          Pebble.showSimpleNotificationOnPebble("Set volume failed", response.error.message);
+          Pebble.showSimpleNotificationOnPebble("Play/Pause failed", response.error.message);
         } else {
           console.log("Error play_pause. response text: " + req.responseText);
           Pebble.showSimpleNotificationOnPebble("Play/Pause failed", "Error on read playing information");

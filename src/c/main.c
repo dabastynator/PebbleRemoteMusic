@@ -28,11 +28,11 @@ static void update_layer_callback(Layer *layer, GContext *ctx) {
 #endif
 
   graphics_context_set_text_color(ctx, GColorBlack);
-  graphics_draw_text(ctx, g_play_artist, fonts_get_system_font(FONT_KEY_GOTHIC_24), 
-                     GRect(5, 5, bounds.size.w - 10, 100), GTextOverflowModeWordWrap, 
+  graphics_draw_text(ctx, g_play_artist, fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD), 
+                     GRect(5, 10, bounds.size.w - 20, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
   graphics_draw_text(ctx, g_play_title, fonts_get_system_font(FONT_KEY_GOTHIC_24), 
-                     GRect(90, 100, bounds.size.w - 95, 60), GTextOverflowModeWordWrap, 
+                     GRect(5, 70, bounds.size.w - 20, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentRight, PBL_IF_RECT_ELSE(NULL, attributes));
 
 #ifdef PBL_ROUND
@@ -54,6 +54,7 @@ static void inbox_received_callback(DictionaryIterator *iter, void *context) {
     char *artist = js_tuple->value->cstring;
     snprintf(g_play_artist, MAX_LENGTH, "%s", artist);
   }
+  layer_mark_dirty(s_layer);
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
