@@ -5,9 +5,15 @@ var clayConfig = require('./config');
 // Initialize Clay
 var clay = new Clay(clayConfig);
 
-function getPlaying(callback){
+function webMethod(method){
   var claySetting = JSON.parse(localStorage.getItem('clay-settings'));  
-  var url = claySetting.host + '/list?token=' + claySetting.token + '&id=' + claySetting.id;
+  var url = claySetting.host + '/' + method + '?token=' + claySetting.token;
+  url = url + '&id=' + claySetting.id + '&player=' + claySetting.player;
+  return url;
+}
+
+function getPlaying(callback){
+  var url = webMethod('list');
   var req = new XMLHttpRequest();  
   console.log("Get playing information from: " + url);  
   
@@ -17,7 +23,8 @@ function getPlaying(callback){
       if (response !== undefined && !response.error) {
         if (response.length > 0 && response[0] !== undefined)
           callback(response[0].current_playing);
-        callback(null);
+        else
+          callback(null);
       } else {
         if (response.error){
           console.log("Error get playing. message: " + response.error.message);
@@ -54,31 +61,8 @@ function sendPlaying(playing){
   });
 }
 
-function update_volume(message) {
-  var claySetting = JSON.parse(localStorage.getItem('clay-settings'));
-  console.log('Update volume. Get current volume first');
-  getPlaying(function(playing){
-    var url = claySetting.host + '?token=' + claySetting.token + '&id=' + claySetting.id + '&player=' + claySetting.player;
-    console.log('Update volume. Get current volume done.');
-    if (message !== undefined && playing !== null && playing.current_playing !== null){
-      var volume = playing.current_playing.volume;
-      if (message.VOLUME === 0){      
-        volume = volume + 5;
-      } else {
-        volume = volume - 5;
-      }
-      url = url + '&volume=' + volume;
-      console.log('Send webrequest: ' + url);
-      sendVolumeRequest(url);
-    } else {
-      console.log('No active player -> Cant update volume...');
-    }
-  });
-}
-
 function play_pause(){
-  var claySetting = JSON.parse(localStorage.getItem('clay-settings'));  
-  var url = claySetting.host + '/play_pause?token=' + claySetting.token + '&id=' + claySetting.id + '&player=' + claySetting.player;
+  var url = webMethod('play_pause');
   var req = new XMLHttpRequest();  
   console.log("Set play/pause: " + url);  
   
@@ -105,6 +89,27 @@ function play_pause(){
   req.timeout = 4000; // 4 seconds timeout
   req.open("GET", url);
   req.send();
+}
+
+function update_volume(message) {
+  console.log('Update volume. Get current volume first');
+  getPlaying(function(playing){
+    var url = webMethod('volume');
+    console.log('Update volume. Get current volume done.');
+    if (message !== undefined && playing !== null){
+      var volume = playing.volume;
+      if (message.VOLUME === 1){      
+        volume = volume + 5;
+      } else {
+        volume = volume - 5;
+      }
+      url = url + '&volume=' + volume;
+      console.log('Send webrequest: ' + url);
+      sendVolumeRequest(url);
+    } else {
+      console.log('No active player -> Cant update volume...');
+    }
+  });
 }
 
 function sendVolumeRequest(url) {
@@ -135,11 +140,14 @@ function sendVolumeRequest(url) {
   req.send();
 }
 
-Pebble.addEventListener('ready', function() {
+function update_content(){
   getPlaying(function(playing){
     sendPlaying(playing);  
-  });  
-});
+  });
+  setTimeout(function() { update_content(); }, 10000);
+}
+
+Pebble.addEventListener('ready', update_content);
 
 Pebble.addEventListener('appmessage', function(e) {
   if (e.payload.VOLUME === 2){

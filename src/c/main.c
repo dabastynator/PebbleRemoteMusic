@@ -29,11 +29,11 @@ static void update_layer_callback(Layer *layer, GContext *ctx) {
 
   graphics_context_set_text_color(ctx, GColorBlack);
   graphics_draw_text(ctx, g_play_artist, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), 
-                     GRect(5, 10, bounds.size.w - 30, 50), GTextOverflowModeWordWrap, 
+                     GRect(5, 10, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
   graphics_draw_text(ctx, g_play_title, fonts_get_system_font(FONT_KEY_GOTHIC_24), 
-                     GRect(5, 70, bounds.size.w - 30, 50), GTextOverflowModeWordWrap, 
-                     GTextAlignmentRight, PBL_IF_RECT_ELSE(NULL, attributes));
+                     GRect(5, 70, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
+                     GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
 
 #ifdef PBL_ROUND
   graphics_text_attributes_destroy(attributes);
