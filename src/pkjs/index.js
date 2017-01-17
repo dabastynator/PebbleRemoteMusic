@@ -152,7 +152,7 @@ Pebble.addEventListener('ready', update_content);
 Pebble.addEventListener('appmessage', function(e) {
   if (e.payload.VOLUME === 2){
     play_pause();    
-  } else {
+  } else if (e.payload.VOLUME === 0 || e.payload.VOLUME === 1){
     update_volume(e.payload);    
   }  
 });

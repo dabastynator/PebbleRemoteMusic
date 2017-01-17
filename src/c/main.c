@@ -1,5 +1,6 @@
 #include <pebble.h>
 #define MAX_LENGTH 30
+#define TIME_LENGTH 7
 
 static ActionBarLayer *action_bar;
 static Layer * s_layer;
@@ -7,6 +8,7 @@ static Window *s_main_window;
 
 char g_play_title[MAX_LENGTH];
 char g_play_artist[MAX_LENGTH];
+char g_time[TIME_LENGTH];
 
 static GBitmap *s_icon_vol_up;
 static GBitmap *s_icon_vol_down;
@@ -18,6 +20,7 @@ const uint32_t outbox_size = 256;
 static int VOL_UP = 1; 
 static int VOL_DOWN = 0;
 static int PLAY = 2;
+static int DUMMY = 3;
 
 static void update_layer_callback(Layer *layer, GContext *ctx) {
   GRect bounds = layer_get_frame(layer);
@@ -26,12 +29,18 @@ static void update_layer_callback(Layer *layer, GContext *ctx) {
   GTextAttributes *attributes = graphics_text_attributes_create();
   graphics_text_attributes_enable_screen_text_flow(attributes, 8);
 #endif
+  time_t now = time(NULL);
+  struct tm *t = localtime(&now);
+  strftime(g_time, TIME_LENGTH, "%H:%M", t);
 
   graphics_context_set_text_color(ctx, GColorBlack);
+  graphics_draw_text(ctx, g_time, fonts_get_system_font(FONT_KEY_GOTHIC_14_BOLD), 
+                     GRect(5, 3, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
+                     GTextAlignmentCenter, PBL_IF_RECT_ELSE(NULL, attributes));
   graphics_draw_text(ctx, g_play_artist, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), 
-                     GRect(5, 10, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
+                     GRect(5, 15, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
-  graphics_draw_text(ctx, g_play_title, fonts_get_system_font(FONT_KEY_GOTHIC_24), 
+  graphics_draw_text(ctx, g_play_title, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), 
                      GRect(5, 70, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
 
@@ -160,7 +169,15 @@ void main_window_load(Window *window) {
   app_message_register_outbox_failed(outbox_failed_callback);  
   
   snprintf(g_play_title, MAX_LENGTH, "%s", "");
-  snprintf(g_play_artist, MAX_LENGTH, "%s", "No connection");  
+  snprintf(g_play_artist, MAX_LENGTH, "%s", "No connection");
+  
+  // Send empty message to wakeup companion app
+  DictionaryIterator *iter;
+  AppMessageResult result = app_message_outbox_begin(&iter);
+  if(result == APP_MSG_OK) {
+    dict_write_int(iter, MESSAGE_KEY_VOLUME, &DUMMY, 1, false);
+    result = app_message_outbox_send();
+  }
 }
 
 static void main_window_unload(Window *window) {
