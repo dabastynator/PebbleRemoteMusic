@@ -41,7 +41,7 @@ static void update_layer_callback(Layer *layer, GContext *ctx) {
                      GRect(5, 15, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
   graphics_draw_text(ctx, g_play_title, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD), 
-                     GRect(5, 70, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
+                     GRect(5, 77, bounds.size.w - 40, 50), GTextOverflowModeWordWrap, 
                      GTextAlignmentLeft, PBL_IF_RECT_ELSE(NULL, attributes));
 
 #ifdef PBL_ROUND
